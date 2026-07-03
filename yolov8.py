@@ -12,18 +12,18 @@ model.predict(source=0, show=True, conf=0.25)
 CONF_THRES = 0.25
 
 # 움직임(픽셀) 기준
-MOVE_PX_THRES = 35          # 민감하게: 20~30 / 둔하게: 45~70 보면서 튜닝하면 됨
+MOVE_PX_THRES = 35          # 민감하게: 20~30 / 둔하게: 45~70 확인하면서 튜닝
 MOVE_HOLD_SEC = 0.25        # 튐 방지
 
 # 쓰러짐 기준: ratio(w/h)
-FALL_RATIO_THRES = 1.25     # w/h가 이 이상이면 넘어진거라고 판단 <- 박스 크기따라서 조정해야 함
+FALL_RATIO_THRES = 1.25     # w/h가 이 이상이면 넘어진거라고 판단 (박스 크기따라서 조정 필요)
 RATIO_JUMP_THRES = 0.60     # ratio가 갑자기 변하면 쓰러짐 후보
 FALL_HOLD_SEC = 0.20        #오탐 방지하려고 넣음
 
 # UART
-SERIAL_PORT = "COM3"        # 여기 꼭 확인 com3가 맞나?? 아님 맞는걸로 수정 ㄱㄱ
+SERIAL_PORT = "COM3"        # 포트 맞는 걸로 수정
 BAUD = 115200
-SEND_COOLDOWN_SEC = 1.0     # 1을 한번 보내면 1초간 재전송 방지 <- 이것도 실험해가면서 튜닝
+SEND_COOLDOWN_SEC = 1.0     # 1을 한번 보내면 1초간 재전송 방지 실험해가면서 튜닝 필요
 
 
 def main():
@@ -87,13 +87,13 @@ def main():
                 # 화면 표시
                 cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
                 cv2.putText(frame, f"{TARGET_NAME} {c:.2f} r={ratio:.2f}",
-                            (x1, max(0, y1 - 8)), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2) #디버그 용임 없애도 상관 없음요
+                            (x1, max(0, y1 - 8)), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2) #디버그 용
 
                 # 많이 움직임: 중심점 이동 거리
                 if prev_center is not None:
                     dist = float(np.linalg.norm(center - prev_center))
                     cv2.putText(frame, f"move_px={dist:.1f}", (10, 25),
-                                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2) #얘도 디버그용
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2) #디버그용
 
                     if dist >= MOVE_PX_THRES:
                         if move_start is None:
